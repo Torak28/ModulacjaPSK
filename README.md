@@ -1,4 +1,4 @@
-#Modulacja PSK (Phase-Shift Keying)
+# Modulacja PSK (Phase-Shift Keying)
 
 Studencki projekt na zajęcia z [Niezawodności i Diagnostyki Układów Cyfrowych](http://www.zsk.ict.pwr.wroc.pl/zsk/dyd/intinz/ndsc/) u [dr inż. Jacka Jarnickiego](http://www.zsk.ict.pwr.wroc.pl/zsk/pracownicy/jjarnicki)
 
@@ -10,16 +10,20 @@ Przygotowali:
  * [piotrmajcher94](https://github.com/piotrmajcher94)
  * [Torak28](https://github.com/Torak28)
 
-#Wstęp
+# Wstęp
+
 Naszym zadanie podczas tego projektu było napisanie w środowisku MATLAB programu symulującego dwa typy modulacji sygnałów cyfrowych – BPSK(ang. Binary Phase Shift Keying) oraz QPSK (ang. Quadrature Phase Shift Keying). Obie wymienione modulacje polegają na zmianach fazy sygnału. Oprócz samych algorytmów modulacji, mieliśmy również zaimplementować generator losowych sygnałów cyfrowych, dodawanie losowych zakłóceń na kanale transmisyjnym oraz algorytmy demodulacji BPSK i QPSK. Ostatnim zadaniem było zasymulowanie rzeczywistej sytuacji odbioru sygnału przez antenę. Nasz sygnał miał dotrzeć do anteny z dwóch stron, bezpośrednio od nadajnika oraz jako sygnał odbity od budynku znajdującego się za anteną. Na każdym etapie pracy mieliśmy tworzyć wykresy ilustrujące działanie naszych algorytmów oraz nasz sygnał. Zaczęliśmy od sporządzenia wykresów kwadratowego sygnału binarnego, później stworzyliśmy wykresy pokazujące nasz sygnał zmodulowany zarówno przez BPSK, jak i QPSK. Zilustrowaliśmy również wpływ losowych zakłóceń na wygląd sygnału. Oprócz tego nasz program wyświetla wykresy wskazowe dla obu typów modulacji oraz trójwymiarowe zobrazowanie zależności BER (ang. bit error rate), od różnych wartości zakłóceń fazy oraz amplitudy. Udało nam się zaimplementować wszystkie kroki, oraz zobrazować wyniki naszych eksperymentów na różnych typach wykresów. Szczegóły naszych algorytmów, fragmenty implementacji oraz wyniki eksperymentów zostały przedstawione w dalszej części sprawozdania.
 
-#Podstawy modulacji
-###Cel modulacji, zasada działania, zastosowanie
+# Podstawy modulacji
+
+### Cel modulacji, zasada działania, zastosowanie
+
 Modulacje cyfrowe są stosowane do transmisji danych binarnych w określonych wąskich rozłącznych pasmach kanału transmisyjnego przeznaczonych na transmisję poszczególnych sygnałów. Wykorzystuje się je np. w łączności modemowej, internetowej, radiowej w paśmie mikrofalowym i satelitarnej. Wprawdzie sygnały zmodulowane w systemach modulacji impulsowo-kodowej mogą być również transmitowane w wąskich pasmach, możliwe jest to jednak po zastosowaniu dodatkowej modulacji analogowej, np. modulacji AM. W przypadku modulacji cyfrowych wąskopasmowy charakter sygnałów wynika natomiast bezpośrednio z samej istoty zastosowanego sposobu modulacji. W cyfrowych systemach modulacji informacja o sygnale zakodowana w sekwencji znaków binarnych „1” i „0” lub sekwencji grup tych znaków o określonej długości jest przesyłana do odbiornika w postaci ciągu krótkich impulsów harmonicznych, których amplituda, faza początkowa lub częstotliwość jest uzmienniana w zależności od transmitowanego strumienia danych. W bardziej złożonych systemach uzmiennieniu mogą podlegać jednocześnie dwa z tych parametrów. (Szabatin, 2000)
 
 ![alt text](http://i.imgur.com/igtwr2e.png "Rysunek 1: Schemat transmisji sygnału")
 
-###Podstawowe algorytmy modulacji
+### Podstawowe algorytmy modulacji
+
 Modulacja amplitudy AM (Amplitude Modulation) - wielkość amplitudy przebiegu fali nośnej ulga zmianom zgodnie ze stanem sygnału wejściowego. Podczas modulacji sygnałów cyfrowych przełączanie dokonuje się między dwoma poziomami amplitudy, a sposób modulacji nazywa się kluczowaniem amplitudy ASK (Amplitude Shift Keying). Ten sposób modulacji podatny jest na tłumienie, w wyniku czego odbierany sygnał może być inny od wysłanego. Zmodulowany sygnał brzmi jak pojedynczy ton o szybkich zmianach głośności, aczkolwiek zmiany te następują zbyt szybko, by mogły być rozróżniane przez człowieka.
 
 **Modulacja częstotliwości FM (Frequency Modulation)** - modulację częstotliwości stosowaną do transmisji cyfrowych nazwano kluczowaniem częstotliwości FSK (Frequency Shift Keying). Najczęściej używane są dwie częstotliwości: niska - odpowiednik logicznej 1, oraz wysoka - odpowiednik logicznego 0. Przy stosowaniu tej techniki modulacji można uzyskać szybkość transmisji jedynie : 300 b/s lub 600 b/s w trybie pracy dupleksowej (jednoczesna transmisja z pełną szybkością w obydwu kierunkach), a 1200 b/s już tylko w trybie pracy półdupleksowej (tryb pracy naprzemiennej ale w danym momencie jest ustalony tylko jeden kierunek transmisji. Dla odwrócenia kierunku potrzebna jest sygnalizacja że urządzenie ukończyło nadawanie). Zmodulowany sygnał brzmi jak dwa zmieniające się dźwięki.
@@ -28,18 +32,22 @@ Modulacja amplitudy AM (Amplitude Modulation) - wielkość amplitudy przebiegu f
 
 ![alt text](http://i.imgur.com/KyQpLD5.png "Rysunek 2: Rodzaje modulacji")
 
-###Modulacja BPSK
+### Modulacja BPSK
+
 Modulacja BPSK z ang. „Binary Phase Shift Keying”, jest to binarna cyfrowa modulacja w której jeden zmodulowany symbol odpowiada jednemu bitowi. Powoduje to dużą odporność na zakłócenia. Transmisja realizowana jest za pomocą przesunięć fazy fali nośnej o 180 lub -180 stopni, w zależności od wartości przesyłanego bitu. (Bernhard H. Walke, 2003)
 
 ![alt text](http://i.imgur.com/evjT7HD.png "Rysunek 3: Modulacja BPSK")
 
-###Modulacja QPSK
+### Modulacja QPSK
+
 Nazwa cyfrowej modulacji QPSK pochodzi od angielskich słów „Quaternart Phase Shift Keying”. Jak wskazuje nazwa, modulacja QPSK mapuje transmitowaną sekwencję bitów, na sekwencje elementów których alfabet składa się z czterech różnych symboli. W transmitowanym sygnale, każdy symbol odpowiada dokładnie jednemu z czterech możliwych przesunięć fazy fali nośnej. (Bernhard H. Walke, 2003)
 
 ![alt text](http://i.imgur.com/Ab8DXOU.png "Rysunek 4: Modulacja QPSK")
 
-#Symulacja systemu transmisji cyfrowej z modulacją BSK i QPSK
-###Zasada działania i model systemu
+# Symulacja systemu transmisji cyfrowej z modulacją BSK i QPSK
+
+### Zasada działania i model systemu
+
 Wszelkie modelowanie wykonywaliśmy w Matlabie, ty samym byliśmy zobowiązani do "przełożenia" rzeczywistości na realia jego języka. Rozpoczynamy od generowania sygnału.
 
 Generujemy wektor naszSygnal, zawierający liczby z przedziału od 0 do 1. Następnie przechodząc po całym wektorze sprawdzamy czy wylosowane w poszczególnych komórkach liczby są większe od 0.5 czy nie. Liczby większe bądź równe 0.5 nadpisujemy przez 1, inne przez 0:
@@ -84,7 +92,8 @@ end
 
 Każdemu bitów oryginalnego sygnału, przypada teraz 100 takich samych próbek. Tym samym niezależnie od początkowej długości generowany przez Nas sygnał zwiększył się 100 krotnie. Co więcej w powyższym kawałku kodu dzielimy nasz sygnał na część parzystą i nieparzystą, co przydaje się przy modulacji QPSK.
 
-###Opis symulatora
+### Opis symulatora
+
 Jako że mamy już gotowy sygnał przygotowany do wyświetlenia na fali nośnej w sposób który gwarantuje nam nie gubienie informacji i jednoznaczność, pora nanieść go na nią i dodać zakłócenia. Rzutowanie na falę odbywa się prosto, poprzez wygenerowanie samej fali(w naszym przypadku cosinus dla BPSK), a następnie pomnożenie jej przez wygenerowany wcześniej sygnał. Samo dodawania zakłóceń odbywa się w dwóch krokach, pierw do fali nośnej dodajemy zakłócenia Fazy, a w następnej pętli mnożymy falę przez sygnał, nadajemy mu Amplitudę o którą wcześniej pytamy użytkowania i od razu ją zakłócamy:
 
 ```Matlab
@@ -261,13 +270,16 @@ Jak łatwo zauważyć powyższa funkcja bardzo wpływa na długość wykonywania
 ![alt text](http://i.imgur.com/atPf9QI.png "Rysunek 11: BER QPSK")
 
 
-###Wyniki symulacji i wnioski
+### Wyniki symulacji i wnioski
+
 Jak łatwo zauważyć obie modulacje są w mały sposób zależne od zakłóceń Amplitudy, a w dużo większym stopniu od zakłóceń Fazy. Co więcej z powodu że QPSK ma mniejsze „pole manewru”(Rysunek 11), przez co rozumiemy że każde zakłócenie Fazy działa na nie mocniej niż w wypadku BPSK, tym samym można zaobserwować ,że ilość błędów w modulacji QPSK jest większa.
 
 Najłatwiej dostrzec to porównując (Rysunek 10) i (Rysunek 11). Wysokość Osi OZ dla modulacji QPSK jest większa, co pokazuje że generuję się tam więcej błędów, co więcej widać że w modulacji BPSK błędy pojawiają się kiedy zakłócenia fazy osiągną ok. 0.5, w przypadku modulacji QPSK błędy pojawiają się już przy 0.25. Oprócz tego gołym okiem można zauważyć dużo mniejszy wpływ zakłócenia amplitudy na ilości błędów.
 
-#Analiza systemu transmisji cyfrowej z odbiciem sygnału
-###Zasada działania i model systemu
+# Analiza systemu transmisji cyfrowej z odbiciem sygnału
+
+### Zasada działania i model systemu
+
 W tym momencie nasze modulacje skonfrontowaliśmy z rzeczywistym problemem. Scenariusz wygląda następująco - nasz sygnał dociera do pewnej anteny z dwóch stron. Z jedne strony w linii prostej od nadajnika, a z drugiej jako sygnał odbity od budynku znajdującego się za anteną, oczywiście opóźniony o odpowiednią wartość i adekwatnie osłabiony. Do wyliczenia opóźnienia zakładamy pewną realną częstotliwość naszego sygnału oraz odległość budynku od anteny. Obie fale trafiają na siebie, a następnie nałożone trafiają do Anteny. Odebrany sygnał poddajemy demodulacji, tym razem jednak nie posiadając informacji o wielkości zakłóceń. W tym wypadku nasza demodulacja polega na analizie kształtu odebranej fali. Pobieramy konkretne próbki i sprawdzamy ich znak oraz badamy monotoniczność sygnału w odpowiednich
 miejscach.
 
@@ -410,7 +422,8 @@ end
 
 Idea jest prosta. Dla modulacji BPSK badamy znak przy 15,50 i 75 próbce każdego okresu. W zależności od niego przypisuje wynikowi 1 albo 0 (Dla przykładu, jeśli 15 i 75 próbka jest nad 0 osi OX mamy do czynienia z zakodowaną 1). Dla modulacji QPSK pierw badamy znak 1 próbki i w zależności od wyniku badamy czy funkcja rośnie czy nie. Zmiana sposobu demodulacji przy modulacji QPSK względem modulacji BPSK wynika z faktu, że wykresy dla (1,0) i (0,0) są takie same co do znaku próbek 15,50 i 75.
 
-###Wynik symulacji
+### Wynik symulacji
+
 W celu uzyskania wartości BER postępujemy analogicznie jak wcześniej, czyli porównujemy dwie tablice:
 
 ```Matlab
@@ -432,10 +445,11 @@ end
 
 Wyniki pokrywają się z przewidywaniami. Im większe zakłócenie Fazy tym więcej błędów, a zakłócanie amplitudy ma minimalny wpływ na ilość błędów w obu modulacjach. Modulacja QPSK nadal generuje więcej błędów od modulacji BPSK. Jedyna zmiana występuje w ilości błędów. Zakłócanie sygnału, sygnałem odbitym zwiększa ilość błędów o ok.20% co w wynika z przesunięć fazowych w momencie nakładania się fal.
 
-#Bibliografia
-1. Bernhard H. Walke, P. S. (2003). UMTS: The Fundamentals. ISBN: 978-0-470-84557-8.
-2. Lyons, G. (1999). Wprowadzenie do cyfrowego przetwarzania sygnałów. Warszawa: Wydawnictwa Komunikacji i Łączności; ISBN: 978-83-206-1764-1.
-3. Nuaymi, P. L. (2007). Technology for Broadband Wireless Access. rozdział 5.11, 5.2; ISBN: 978-0-470-02808-7.
-4. Pratap, R. (2013). Matlab 7 dla naukowców i inżynierów. Warszawa: Wydawnictwo Naukowe PWN; ISBN: 978-8-301-1605-79.
-5. Szabatin, J. (2000). Podstawy teorii sygnałów. Wydawnictwa Komunikacji i Łączności; ISBN: 978-83-206-1331-5.
-6. Wesołowski, K. (2006). Podstawy cyfrowych systemów telekomunikacyjnych. Wydawnictwa Komunikacji i Łączności; ISBN: 832-0-615-089.
+# Bibliografia
+
+1. *Bernhard H. Walke, P. S. (2003).*, **UMTS: The Fundamentals.**, ISBN: 978-0-470-84557-8.
+2. *Lyons, G. (1999).*, **Wprowadzenie do cyfrowego przetwarzania sygnałów. Warszawa: Wydawnictwa Komunikacji i Łączności.**, ISBN: 978-83-206-1764-1.
+3. *Nuaymi, P. L. (2007).*, **Technology for Broadband Wireless Access. rozdział 5.11, 5.2.**, ISBN: 978-0-470-02808-7.
+4. *Pratap, R. (2013).*, **Matlab 7 dla naukowców i inżynierów.**, Warszawa: Wydawnictwo Naukowe PWN; ISBN: 978-8-301-1605-79.
+5. *Szabatin, J. (2000).*, **Podstawy teorii sygnałów. Wydawnictwa Komunikacji i Łączności.**, ISBN: 978-83-206-1331-5.
+6. *Wesołowski, K. (2006).*, **Podstawy cyfrowych systemów telekomunikacyjnych.**, Wydawnictwa Komunikacji i Łączności; ISBN: 832-0-615-089.
