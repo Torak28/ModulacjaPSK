@@ -285,7 +285,7 @@ miejscach.
 
 ![alt text](http://i.imgur.com/UMp76ZP.png "Rysunek 12: Modelowana sytuacja")
 
-###Opis symulatora
+### Opis symulatora
 Sama generacja obu sygnałów przebiega identycznie tak jak wcześniej. jedyna różnica pojawią się w związku z generacja drugiego sygnału. Jest on oczywiście osłabiany przez zmniejszenie amplitudy oraz przesuwany:
 
 ```Matlab
